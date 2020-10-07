@@ -27,7 +27,6 @@ export function apiRequest(apiPath, method, body) {
         }
     });
 }
-
 // Generic API request methods. Non-POST methods may take an optional 'id'
 
 export function apiGet(apiPath, id) {
