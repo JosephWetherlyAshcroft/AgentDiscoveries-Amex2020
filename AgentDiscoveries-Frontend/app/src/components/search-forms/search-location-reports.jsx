@@ -85,6 +85,7 @@ export default class LocationReportsSearch extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
+        console.log('Miro Search location report state before submitting 0: ', params);
 
         const params = {
             callSign: this.state.callSign,
@@ -93,10 +94,16 @@ export default class LocationReportsSearch extends React.Component {
             toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString()
         };
 
+        console.log('Miro Search location report state before submitting:', params);
+
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
 
         apiGet(url)
             .then(results => this.setState({ results: results, message: {} }))
-            .catch(error => this.setState({ message: { message: error.message, type: 'danger' } }));
+            .catch(error => {
+                console.log('Miro error: ',error);
+                return this.setState({message: {message: error.message, type: 'danger'}});
+            }
+            );
     }
 }

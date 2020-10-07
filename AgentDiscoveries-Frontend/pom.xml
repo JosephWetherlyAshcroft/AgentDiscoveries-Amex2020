@@ -33,7 +33,7 @@
             <properties>
                 <npm.command>run build</npm.command>
                 <skip.unit.tests>false</skip.unit.tests>
-                </properties>
+            </properties>
         </profile>
 
         <profile>
@@ -50,6 +50,10 @@
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>0.0.27</version>
+                <configuration>
+                    <nodeDownloadRoot>https://ci-repo.aexp.com/repository/nodejs-proxy/</nodeDownloadRoot>
+                    <npmRegistryURL>https://acp-repoadm.app.aexp.com/artifactory/api/npm/npm-virtual</npmRegistryURL>
+                </configuration>
                 <executions>
 
                     <execution>
@@ -58,8 +62,10 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v8.9.4</nodeVersion>
-                            <npmVersion>5.6.0</npmVersion>
+<!--                            <nodeVersion>v8.9.4</nodeVersion>-->
+                            <nodeVersion>v12.16.1</nodeVersion>
+<!--                            <npmVersion>5.6.0</npmVersion>-->
+                            <npmVersion>6.13.4</npmVersion>
                         </configuration>
                     </execution>
 

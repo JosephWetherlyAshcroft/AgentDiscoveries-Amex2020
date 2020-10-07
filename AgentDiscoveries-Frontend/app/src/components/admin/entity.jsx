@@ -27,6 +27,9 @@ export default class Entity extends React.Component {
     }
 
     getEditButton() {
+        console.log('Miro001');
+        console.log(this.props.type);
+        console.log(this.id);
         return (
             <Link to={`/admin/${this.props.type}/edit/${this.id}`}>
                 <Button type='button'>Edit</Button>
