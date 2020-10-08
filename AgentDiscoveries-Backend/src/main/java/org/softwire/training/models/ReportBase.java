@@ -10,6 +10,7 @@ public class ReportBase {
     private byte status;
     private LocalDateTime reportTime; // Always UTC in the DB
     private String reportBody;
+    private String title;
     private int agentId;
 
     @Id
@@ -42,6 +43,17 @@ public class ReportBase {
         this.reportTime = reportTime;
     }
 
+
+    @Column(name = "title", columnDefinition = "mediumtext", nullable = false)
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
     @Column(name = "report_body", columnDefinition = "mediumtext", nullable = false)
     public String getReportBody() {
         return reportBody;
@@ -55,4 +67,5 @@ public class ReportBase {
     public int getAgentId() { return agentId; }
 
     public void setAgentId(int agentId) { this.agentId = agentId; }
+
 }
