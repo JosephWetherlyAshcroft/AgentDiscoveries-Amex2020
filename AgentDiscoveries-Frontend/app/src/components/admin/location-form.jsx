@@ -57,15 +57,17 @@ export default class LocationForm extends React.Component {
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Latitude</ControlLabel>
-                            <FormControl type='text' required
-                                         placeholder='Enter Latitude of Location'
+                            <FormControl type='number' required
+                                         step="0.1"
+                                         placeholder='Location Latitude (Decimal degrees (DD): 41.40338, 2.17403)'
                                          value={this.state.latitude}
                                          onChange={this.onLatitudeChange}/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Longitude</ControlLabel>
-                            <FormControl type='text' required
-                                         placeholder='Enter Longitude of Location'
+                            <FormControl type='number' required
+                                         step="0.1"
+                                         placeholder='Location Longitude (Decimal degrees (DD): 41.40338, 2.17403)'
                                          value={this.state.longitude}
                                          onChange={this.onLongitudeChange}/>
                         </FormGroup>

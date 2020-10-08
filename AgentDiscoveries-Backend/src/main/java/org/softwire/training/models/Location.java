@@ -11,8 +11,8 @@ public class Location {
     private String location;
     private String timeZone;
     private Integer regionId; // Nullable
-    private String latitude;
-    private String longitude;
+    private float latitude;
+    private float longitude;
 
     @Id
     @Column(name = "location_id", nullable = false)
@@ -61,21 +61,21 @@ public class Location {
         this.regionId = regionId;
     }
 
-    @Column(name = "latitude", length = 20, nullable = false)
-    public String getLatitude() {
+    @Column(name = "latitude")
+    public float getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
 
-    @Column(name = "longitude", length = 20, nullable = false)
-    public String getLongitude() {
+    @Column(name = "longitude")
+    public float getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
 }
