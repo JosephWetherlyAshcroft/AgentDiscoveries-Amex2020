@@ -91,7 +91,6 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
 
             emForAgentQuery.getTransaction().commit();
             emForAgentQuery.close();
-
             searchCriteria.add(new AgentIdSearchCriterion(agentId));
         }
     }
