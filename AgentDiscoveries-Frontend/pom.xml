@@ -55,7 +55,6 @@
                 <npmRegistryURL>https://acp-repoadm.app.aexp.com/artifactory/api/npm/npm-virtual</npmRegistryURL>
                 </configuration>
                 <executions>
-
                     <execution>
                         <id>install node and npm</id>
                         <goals>
