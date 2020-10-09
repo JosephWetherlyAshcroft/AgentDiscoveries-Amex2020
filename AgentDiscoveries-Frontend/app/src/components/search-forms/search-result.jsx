@@ -1,5 +1,7 @@
 import * as React from 'react';
-import {Panel} from 'react-bootstrap';
+import {Button, Panel} from 'react-bootstrap';
+import Pdf from 'react-to-pdf';
+
 
 export default class SearchResult extends React.Component {
     render() {
@@ -13,12 +15,26 @@ export default class SearchResult extends React.Component {
 
     renderResults(results) {
         return results.map((result, index) => {
+
             return (
-                <Panel key={index}>
-                    <Panel.Heading>Result</Panel.Heading>
+                <Panel id={index} key={index}>
+                    <Panel.Heading>Result {this.renderDownloadButton(index)}</Panel.Heading>
                     <Panel.Body>{this.renderResultBody(result)}</Panel.Body>
                 </Panel>
             );
+
+            // const ref = React.createRef();
+            // return (
+            //     <Document id={index}>
+            //         <Pdf targetRef={ref} filename="code-example.pdf">
+            //             {({ toPdf }) => <button onClick={toPdf}>Generate Pdf</button>}
+            //         </Pdf>
+            //         <div ref={ref} key={index}>
+            //             <Panel.Heading>Result </Panel.Heading>
+            //             <Panel.Body>{this.renderResultBody(result)}</Panel.Body>
+            //         </div>
+            //     </Document>
+            // );
         });
     }
 
@@ -35,4 +51,15 @@ export default class SearchResult extends React.Component {
                 : <h3>{`${results.length} results`}</h3>)
             : '';
     }
+
+    downloadReport(that){
+        console.log('clicked on ' + that);
+    }
+
+    renderDownloadButton() {
+        return <button onClick={this.downloadReport.bind(this)}>Download as PDF</button>;
+    }
+
+
+
 }
