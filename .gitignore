@@ -1,5 +1,6 @@
 target/
 AgentDiscoveries-Backend/src/main/resources/config.properties
+AgentDiscoveries-Backend/src/main/resources/META-INF/persistence.xml
 .idea
 *.iml
 appspec.yml

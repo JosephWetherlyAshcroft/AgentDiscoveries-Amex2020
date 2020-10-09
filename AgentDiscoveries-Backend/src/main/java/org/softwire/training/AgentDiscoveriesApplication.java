@@ -72,8 +72,6 @@ public class AgentDiscoveriesApplication implements Runnable {
                 path("/pictures", this::picturesRouteGroup);
                 path("/agents", this::agentsRouteGroup);
                 path("/regions", this::regionsRouteGroup);
-                System.out.println("Miro in main l.75, approaching () -> reportsRouteGroup(locationStatusReportsRoutes) in MAIN method");
-                System.out.println("Miro l.76 - locationStatusReportsRoutes.toString(): " + locationStatusReportsRoutes.toString());
                 path("/reports/locationstatuses", () -> reportsRouteGroup(locationStatusReportsRoutes));
                 path("/reports/regionsummaries", () -> reportsRouteGroup(regionSummaryReportsRoutes));
                 path("/external", this::externalRouteGroup);
@@ -132,7 +130,6 @@ public class AgentDiscoveriesApplication implements Runnable {
     }
 
     private void reportsRouteGroup(ReportsRoutesBase<?, ?> reportsRoutes) {
-        System.out.println("Miro: private void reportsRouteGroup(ReportsRoutesBase<?, ?> reportsRoutes)");
         post("", reportsRoutes::createReport, responseTransformer);
         get("/:id", (req, res) -> reportsRoutes.readReport(req, res, idParamAsInt(req)), responseTransformer);
         delete("/:id", (req, res) -> reportsRoutes.deleteReport(req, res, idParamAsInt(req)), responseTransformer);
