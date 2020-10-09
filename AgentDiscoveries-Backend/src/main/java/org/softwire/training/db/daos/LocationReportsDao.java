@@ -1,5 +1,6 @@
 package org.softwire.training.db.daos;
 
+import org.softwire.training.db.daos.searchcriteria.AgentCallSignSearchCriterion;
 import org.softwire.training.db.daos.searchcriteria.AgentIdSearchCriterion;
 import org.softwire.training.db.daos.searchcriteria.ReportSearchCriterion;
 import org.softwire.training.models.Agent;
@@ -40,6 +41,7 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
         helper.deleteEntity(LocationStatusReport.class, reportId);
     }
 
+    //searchReports original
     //public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
     //    EntityManager em = entityManagerFactory.createEntityManager();
     //    em.getTransaction().begin();
@@ -71,41 +73,11 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
     //}
 
     public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
-        /////MIRO 2 queries section
-        String agentCallSign = "";
-        ReportSearchCriterion searchCriterionToRemove = null;
-        for (ReportSearchCriterion criterion : searchCriteria) {
-
-            for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
-                //System.out.println("A: "+bindingEntry.getKey());
-                //System.out.println("B: " +bindingEntry.getValue());
-                if (bindingEntry.getKey().equals("call_sign_sc_call_sign")) {
-                    agentCallSign = (String) bindingEntry.getValue();
-                    searchCriterionToRemove = criterion;
-                }
-            }
-        }
-        //System.out.println("Agent wanted: "+agentCallSign);
-        if (agentCallSign.length() > 0) {
-            searchCriteria.remove(searchCriterionToRemove);
-            List<Agent> agents = helperAgent.getEntities(Agent.class);
-            int agentId = -1;
-            for (int i = 0; i < agents.size(); i++) {
-                if (agents.get(i).getCallSign().equals(agentCallSign)) agentId = agents.get(i).getAgentId();
-            }
-            if (agentId>=0) searchCriteria.add(new AgentIdSearchCriterion(agentId));
-            System.out.println("agent id from given call sign: " + agentCallSign + " " + agentId);
-        }
-        //////END OF "S I M P L E - 2queries" implementation
-
+        implementAgentCall_Sign(searchCriteria);
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
-
         String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(searchCriteria);
-
         TypedQuery<LocationStatusReport> query = em.createQuery("FROM LocationStatusReport" + whereClause, LocationStatusReport.class);
-        //TypedQuery<LocationStatusReport> query = em.createQuery("SELECT r FROM LocationStatusReport r" + whereClause, LocationStatusReport.class);
-
         for (ReportSearchCriterion criterion : searchCriteria) {
             for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
                 query = query.setParameter(bindingEntry.getKey(), bindingEntry.getValue());
@@ -116,4 +88,97 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
         em.close();
         return results;
     }
+
+    //implementing stream (and for loop) - final solution(s)
+    private void implementAgentCall_Sign(List<ReportSearchCriterion> searchCriteria) {
+        String agentCallSign = "";
+        ReportSearchCriterion searchCriterionToRemove = null;
+        for (ReportSearchCriterion criterion : searchCriteria) {
+            for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
+                if (bindingEntry.getKey().equals("call_sign_sc_call_sign")) {
+                    agentCallSign = (String) bindingEntry.getValue();
+                    searchCriterionToRemove = criterion;
+                }
+            }
+        }
+        if (agentCallSign.length() > 0) {
+            searchCriteria.remove(searchCriterionToRemove);
+
+            //////using stream
+            final String AGENT_CALL_SIGN = agentCallSign;
+            int agentId = helperAgent
+                            .getEntities(Agent.class)
+                            .stream()
+                            .filter(a -> a.getCallSign().equals(AGENT_CALL_SIGN))
+                            .map(agent -> agent.getAgentId())
+                            .findFirst()
+                            .orElse(-1);
+
+
+            //using query to get single agent_id;
+            List<ReportSearchCriterion> agentSearchCriteria = new ArrayList<>();
+            agentSearchCriteria.add(new AgentCallSignSearchCriterion(agentCallSign));
+
+            EntityManager emForAgentQuery = entityManagerFactory.createEntityManager();
+            emForAgentQuery.getTransaction().begin();
+
+            String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(agentSearchCriteria);
+            TypedQuery<Agent> query = emForAgentQuery.createQuery("FROM Agent" + whereClause, Agent.class);
+
+            for (ReportSearchCriterion criterion : agentSearchCriteria) {
+                for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
+                    query = query.setParameter(bindingEntry.getKey(), bindingEntry.getValue());
+                }
+            }
+
+            Optional agentOrEmpty = query.getResultStream().map(a->a.getAgentId()).findFirst();
+            int agentId = agentOrEmpty.isPresent() ? (int)agentOrEmpty.get() : -1;
+
+            emForAgentQuery.getTransaction().commit();
+            emForAgentQuery.close();
+
+
+            System.out.println(agentId);
+            searchCriteria.add(new AgentIdSearchCriterion(agentId));
+        }
+    }
+
+    //implementing query receiving single value instead of all agents
+    //private void implementAgentCall_Sign(List<ReportSearchCriterion> searchCriteria) {
+    //    String agentCallSign = "";
+    //    ReportSearchCriterion searchCriterionToRemove = null;
+    //    for (ReportSearchCriterion criterion : searchCriteria) {
+    //        for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
+    //            if (bindingEntry.getKey().equals("call_sign_sc_call_sign")) {
+    //                agentCallSign = (String) bindingEntry.getValue();
+    //                searchCriterionToRemove = criterion;
+    //            }
+    //        }
+    //    }
+    //    if (agentCallSign.length() > 0) {
+    //        searchCriteria.remove(searchCriterionToRemove);
+    //
+    //
+    //        List<ReportSearchCriterion> agentSearchCriteria = new ArrayList<>();
+    //        agentSearchCriteria.add(new AgentCallSignSearchCriterion(agentCallSign));
+    //
+    //        EntityManager em2 = entityManagerFactory.createEntityManager();
+    //        em2.getTransaction().begin();
+    //        String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(agentSearchCriteria);
+    //        TypedQuery<Agent> query = em2.createQuery("FROM Agent" + whereClause, Agent.class);
+    //        for (ReportSearchCriterion criterion : agentSearchCriteria) {
+    //            for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
+    //                query = query.setParameter(bindingEntry.getKey(), bindingEntry.getValue());
+    //            }
+    //        }
+    //        Optional agentOrEmpty = query.getResultStream().map(a->a.getAgentId()).findFirst();
+    //        int agentId = agentOrEmpty.isPresent() ? (int)agentOrEmpty.get() : -1;
+    //        System.out.println(agentId);
+    //        em2.getTransaction().commit();
+    //        em2.close();
+    //
+    //        searchCriteria.add(new AgentIdSearchCriterion(agentId));
+    //    }
+    //}
+
 }

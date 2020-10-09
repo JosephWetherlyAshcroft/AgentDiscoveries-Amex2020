@@ -1,3 +1,5 @@
 target/
+AgentDiscoveries-Backend/src/main/resources/config.properties
 .idea
 *.iml
+appspec.yml
