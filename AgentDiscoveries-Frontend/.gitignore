@@ -3,3 +3,9 @@ target/
 node/
 node_modules/
 npm-debug.log
+
+app/src/components/utilities/request-helper.js
+package-lock.json
+package.json
+pom.xml
+webpack.config.js
