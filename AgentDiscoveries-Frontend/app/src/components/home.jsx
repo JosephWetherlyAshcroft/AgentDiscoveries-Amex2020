@@ -29,7 +29,7 @@ export default class Home extends React.Component {
     renderTimeZones() {
         let filtered = this.removeDuplicates(this.state.entities, 'timeZone');
         return filtered.map((location) =>
-            <div className={'panel panel-default timezone'}>
+            <div key={location.timeZone} className={'panel panel-default timezone'}>
                 <div className='panel-heading'>{location.location}</div>
                 <div className='panel-body'>
                     <div className='time'>{this.getTimeFromTimeZone(location.timeZone)}</div>
