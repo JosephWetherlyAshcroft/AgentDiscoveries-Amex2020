@@ -6,11 +6,15 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class ReportBase {
 
+
     private int reportId;
     private byte status;
     private LocalDateTime reportTime; // Always UTC in the DB
     private String reportBody;
     private int agentId;
+
+
+
 
     @Id
     @Column(name = "report_id", nullable = false)
@@ -23,10 +27,16 @@ public class ReportBase {
         this.reportId = reportId;
     }
 
+
     @Column(name = "status", nullable = false)
     public byte getStatus() {
-        return status;
+        if (status <= 100) {
+            return status;
+        } else {
+            return Byte.parseByte("INVALID");
+        }
     }
+
 
     public void setStatus(byte status) {
         this.status = status;
