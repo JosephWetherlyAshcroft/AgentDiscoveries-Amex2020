@@ -77,3 +77,23 @@ body {
 .profile-img-container:hover .overlay {
   opacity: 0.8;
 }
+
+.timezone {
+  margin: 9px;
+  width: 30%;
+  text-align: center;
+}
+.timezone-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.time {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.zone {
+  color: #999;
+  font-size: 12px;
+}

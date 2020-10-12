@@ -58,18 +58,18 @@ export default class LocationForm extends React.Component {
                         <FormGroup>
                             <ControlLabel>Latitude</ControlLabel>
                             <FormControl type='number' required
-                                         step="0.1"
-                                         placeholder='Location Latitude (Decimal degrees (DD): 41.40338, 2.17403)'
-                                         value={this.state.latitude}
-                                         onChange={this.onLatitudeChange}/>
+                                step="0.1"
+                                placeholder='Location Latitude (Decimal degrees (DD): 41.40338, 2.17403)'
+                                value={this.state.latitude}
+                                onChange={this.onLatitudeChange}/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Longitude</ControlLabel>
                             <FormControl type='number' required
-                                         step="0.1"
-                                         placeholder='Location Longitude (Decimal degrees (DD): 41.40338, 2.17403)'
-                                         value={this.state.longitude}
-                                         onChange={this.onLongitudeChange}/>
+                                step="0.1"
+                                placeholder='Location Longitude (Decimal degrees (DD): 41.40338, 2.17403)'
+                                value={this.state.longitude}
+                                onChange={this.onLongitudeChange}/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Time Zone</ControlLabel>
@@ -85,7 +85,7 @@ export default class LocationForm extends React.Component {
                                 value={this.state.regionId}
                                 onChange={this.onRegionIdChange}/>
                         </FormGroup>
-                            <Button type='submit'>Submit</Button>
+                        <Button type='submit'>Submit</Button>
                     </Form>
                 </div>
             </div>
