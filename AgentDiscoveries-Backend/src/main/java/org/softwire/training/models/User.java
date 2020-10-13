@@ -59,10 +59,21 @@ public class User {
         this.agentId = agentId;
     }
 
+
     @Column(name = "admin", nullable = false)
     public boolean isAdmin(){
         return admin;
     }
 
     public void setAdmin(boolean admin){this.admin=admin;}
+
+    public boolean consideredAgent(){
+        if (getAgentId() != null){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }
