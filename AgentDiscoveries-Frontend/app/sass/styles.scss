@@ -78,6 +78,14 @@ body {
   opacity: 0.8;
 }
 
+.search-panel-heading {
+  display: flex;
+  align-items: center;
+}
+.search-panel-heading > span {
+  margin-right: auto;
+}
+
 .timezone {
   margin: 9px;
   width: 30%;
