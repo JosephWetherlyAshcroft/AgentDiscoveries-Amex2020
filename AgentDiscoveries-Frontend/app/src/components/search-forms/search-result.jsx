@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Panel} from 'react-bootstrap';
 import {jsPDF} from 'jspdf';
 
-
 export default class SearchResult extends React.Component {
     render() {
         return (
