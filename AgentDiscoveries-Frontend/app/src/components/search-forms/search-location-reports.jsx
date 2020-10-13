@@ -85,18 +85,15 @@ export default class LocationReportsSearch extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
-
         const params = {
             callSign: this.state.callSign,
             locationId: this.state.locationId,
             fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
             toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString()
         };
-
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
-
         apiGet(url)
             .then(results => this.setState({ results: results, message: {} }))
-            .catch(error => this.setState({ message: { message: error.message, type: 'danger' } }));
+            .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
 }

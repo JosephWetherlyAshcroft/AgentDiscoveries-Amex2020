@@ -11,6 +11,7 @@ export default class LocationReportSubmit extends React.Component {
         this.state = {
             locations: [],
 
+            title: '',
             locationId: '',
             status: '',
             reportBody: '',
@@ -19,6 +20,7 @@ export default class LocationReportSubmit extends React.Component {
             messages: []
         };
 
+        this.onTitleChange = this.onTitleChange.bind(this);
         this.onLocationChange = this.onLocationChange.bind(this);
         this.onStatusChange = this.onStatusChange.bind(this);
         this.onReportBodyChange = this.onReportBodyChange.bind(this);
@@ -40,6 +42,15 @@ export default class LocationReportSubmit extends React.Component {
 
                     <Messages messages={this.state.messages}/>
 
+                    <FormGroup>
+                        <ControlLabel>Title</ControlLabel>
+                        <FormControl type='text' required
+                            componentClass='textarea' rows={2}
+                            placeholder='Write title'
+                            value={this.state.title}
+                            onChange={this.onTitleChange}
+                            id="title-input"/>
+                    </FormGroup>
                     <FormGroup>
                         <ControlLabel>Location</ControlLabel>
                         <FormControl componentClass='select' required
@@ -81,6 +92,13 @@ export default class LocationReportSubmit extends React.Component {
         );
     }
 
+
+
+
+    onTitleChange(event) {
+        this.setState({ title: event.target.value });
+    }
+
     onLocationChange(event) {
         this.setState({ locationId: event.target.value && parseInt(event.target.value) });
     }
@@ -103,6 +121,7 @@ export default class LocationReportSubmit extends React.Component {
         this.setState({ messages: [] });
 
         const body = {
+            title: this.state.title,
             locationId: this.state.locationId,
             status: this.state.status,
             reportBody: this.state.reportBody,
@@ -112,6 +131,7 @@ export default class LocationReportSubmit extends React.Component {
         apiPost('reports/locationstatuses', body)
             .then(() => this.addMessage('Report submitted', 'info'))
             .catch(() => this.addMessage('Error submitting report, please try again later', 'danger'));
+
 
         if (this.state.sendExternal) {
             apiPost('external/reports', body)

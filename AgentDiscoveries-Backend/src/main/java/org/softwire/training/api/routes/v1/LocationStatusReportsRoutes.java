@@ -44,6 +44,7 @@ public class LocationStatusReportsRoutes extends ReportsRoutesBase<LocationStatu
         LocalDateTime reportTimeUtc = LocalDateTime.now(ZoneOffset.UTC);
 
         LocationStatusReport model = new LocationStatusReport();
+        model.setTitle(apiModel.getTitle());
         model.setAgentId(apiModel.getAgentId());
         model.setLocationId(apiModel.getLocationId());
         model.setStatus(apiModel.getStatus());
@@ -74,6 +75,7 @@ public class LocationStatusReportsRoutes extends ReportsRoutesBase<LocationStatu
         apiModel.setStatus(model.getStatus());
         apiModel.setReportTime(model.getReportTime().atZone(locationTimeZone));
         apiModel.setReportBody(model.getReportBody());
+        apiModel.setTitle(model.getTitle());
 
         return apiModel;
     }
@@ -85,6 +87,7 @@ public class LocationStatusReportsRoutes extends ReportsRoutesBase<LocationStatu
 
         if (!isNullOrEmpty(queryMap.get("callSign").value())) {
             searchCriteria.add(new AgentCallSignSearchCriterion(queryMap.get("callSign").value()));
+            //searchCriteria.add(n);
         }
 
         if (!isNullOrEmpty(queryMap.get("locationId").value())) {
