@@ -81,10 +81,6 @@ export default class LocationReportsSearch extends React.Component {
                             onChange={this.onToChange}/>
                     </FormGroup>
                     <Button type='submit'>Search</Button>
-                    <br/>
-                    <button type="button">Previous lot</button>
-                    {/*<button type="button" onClick={loadNextLot}>Next lot</button>*/}
-                    <button type="submit" onClick={this.loadNextPage}>Next lot</button>
                 </Form>
                 <SearchResult results={this.state.results} />
             </div>
@@ -120,6 +116,7 @@ export default class LocationReportsSearch extends React.Component {
             .then(results => this.setState({ results: results, message: {} }))
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
+<<<<<<< HEAD
 
     loadNextPage(event){
         event.preventDefault();
@@ -137,4 +134,7 @@ export default class LocationReportsSearch extends React.Component {
             .then(results => this.setState({ results: results, message: {} }))
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
+
+=======
+>>>>>>> parent of 6c9b583... before rebasing to master
 }
