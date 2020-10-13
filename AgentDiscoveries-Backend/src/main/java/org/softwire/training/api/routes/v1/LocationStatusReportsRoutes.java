@@ -102,6 +102,10 @@ public class LocationStatusReportsRoutes extends ReportsRoutesBase<LocationStatu
             searchCriteria.add(new ToTimeSearchCriterion(ZonedDateTime.parse(queryMap.get("toTime").value())));
         }
 
+        if (!isNullOrEmpty(queryMap.get("resultsRange").value())) {
+            searchCriteria.add(new ResultsRangeCriterion(queryMap.get("resultsRange").value()));
+        }
+
         return searchCriteria;
     }
 }
