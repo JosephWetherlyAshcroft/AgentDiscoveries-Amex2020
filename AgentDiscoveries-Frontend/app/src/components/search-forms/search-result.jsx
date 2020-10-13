@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Button, Panel} from 'react-bootstrap';
-import Pdf from 'react-to-pdf';
+import {Panel} from 'react-bootstrap';
+import {jsPDF} from 'jspdf';
 
 
 export default class SearchResult extends React.Component {
@@ -15,26 +15,14 @@ export default class SearchResult extends React.Component {
 
     renderResults(results) {
         return results.map((result, index) => {
-
             return (
-                <Panel id={index} key={index}>
-                    <Panel.Heading>Result {this.renderDownloadButton(index)}</Panel.Heading>
+                <Panel key={index}>
+                    <Panel.Heading className='search-panel-heading'>
+                        <span>Result</span> {this.renderDownloadButton(this)}
+                    </Panel.Heading>
                     <Panel.Body>{this.renderResultBody(result)}</Panel.Body>
                 </Panel>
             );
-
-            // const ref = React.createRef();
-            // return (
-            //     <Document id={index}>
-            //         <Pdf targetRef={ref} filename="code-example.pdf">
-            //             {({ toPdf }) => <button onClick={toPdf}>Generate Pdf</button>}
-            //         </Pdf>
-            //         <div ref={ref} key={index}>
-            //             <Panel.Heading>Result </Panel.Heading>
-            //             <Panel.Body>{this.renderResultBody(result)}</Panel.Body>
-            //         </div>
-            //     </Document>
-            // );
         });
     }
 
@@ -52,14 +40,17 @@ export default class SearchResult extends React.Component {
             : '';
     }
 
-    downloadReport(that){
-        console.log('clicked on ' + that);
+    downloadReport(event) {
+        let doc = new jsPDF();
+        let start = 10;
+        let reportFields = event.target.parentElement.parentElement.getElementsByClassName('panel-body')[0].childNodes;
+        reportFields.forEach(child => doc.text(child.innerHTML, 10, start = start + 10));
+        doc.save('report.pdf');
     }
 
-    renderDownloadButton() {
-        return <button onClick={this.downloadReport.bind(this)}>Download as PDF</button>;
+    renderDownloadButton(e) {
+        return <button onClick={this.downloadReport.bind(e)}>Download as PDF</button>;
     }
-
 
 
 }

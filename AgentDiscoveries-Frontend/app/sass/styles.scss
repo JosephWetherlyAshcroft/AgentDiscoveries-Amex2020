@@ -77,3 +77,11 @@ body {
 .profile-img-container:hover .overlay {
   opacity: 0.8;
 }
+
+.search-panel-heading {
+  display: flex;
+  align-items: center;
+}
+.search-panel-heading > span {
+  margin-right: auto;
+}
