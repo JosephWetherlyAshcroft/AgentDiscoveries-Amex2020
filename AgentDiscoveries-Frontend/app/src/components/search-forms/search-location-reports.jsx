@@ -25,13 +25,14 @@ export default class LocationReportsSearch extends React.Component {
         this.onFromChange = this.onFromChange.bind(this);
         this.onToChange = this.onToChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.loadNextPage = this.loadNextPage.bind(this);
     }
 
     render() {
         return (
             <div className='col-md-8 col-md-offset-2'>
                 <Form onSubmit={this.onSubmit}>
-                    <h3>Search Location Reports</h3>
+                    <h3>Search Location Reports XY</h3>
 
                     <Message message={this.state.message} />
 
@@ -61,8 +62,13 @@ export default class LocationReportsSearch extends React.Component {
                             onChange={this.onToChange}/>
                     </FormGroup>
                     <Button type='submit'>Search</Button>
+                    <br/>
+                    <button type="button">Previous lot</button>
+                    {/*<button type="button" onClick={loadNextLot}>Next lot</button>*/}
+                    <button type="submit" onClick={this.loadNextPage}>Next lot</button>
                 </Form>
                 <SearchResult results={this.state.results} />
+
             </div>
         );
     }
@@ -85,11 +91,30 @@ export default class LocationReportsSearch extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
+        console.log('ahoj 2');
+
         const params = {
             callSign: this.state.callSign,
             locationId: this.state.locationId,
             fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
             toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString()
+        };
+        const url = 'reports/locationstatuses?' + QueryString.stringify(params);
+        apiGet(url)
+            .then(results => this.setState({ results: results, message: {} }))
+            .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
+    }
+
+    loadNextPage(event){
+        event.preventDefault();
+        console.log('ahoj 1');
+        console.log(this);
+        const params = {
+            callSign: this.state.callSign,
+            locationId: this.state.locationId,
+            fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
+            toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString(),
+            resultsRange:'2-3'
         };
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
         apiGet(url)
