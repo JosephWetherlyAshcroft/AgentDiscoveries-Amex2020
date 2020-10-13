@@ -11,6 +11,9 @@ export default class LocationReportsSearch extends React.Component {
         super(props);
 
         this.state = {
+            locations: [],
+            callSigns: [],
+
             callSign: '',
             locationId: '',
             fromTime: '',
@@ -24,8 +27,17 @@ export default class LocationReportsSearch extends React.Component {
         this.onLocationChange = this.onLocationChange.bind(this);
         this.onFromChange = this.onFromChange.bind(this);
         this.onToChange = this.onToChange.bind(this);
+        this.onLocationChange = this.onLocationChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.loadNextPage = this.loadNextPage.bind(this);
+    }
+    componentWillMount() {
+        apiGet('locations')
+            .then(results => this.setState({ locations: results }))
+            .catch(() => this.addMessage('Error fetching locations, please try again later', 'danger'));
+        apiGet('agents')
+            .then(results => this.setState({ callSigns: results }))
+            .catch(() => this.addMessage('Error fetching locations, please try again later', 'danger'));
     }
 
     render() {
@@ -37,18 +49,26 @@ export default class LocationReportsSearch extends React.Component {
                     <Message message={this.state.message} />
 
                     <FormGroup>
-                        <ControlLabel>Agent Call Sign</ControlLabel>
-                        <FormControl type='text'
-                            placeholder='Enter agent Call Sign'
-                            value={this.state.callSign}
-                            onChange={this.onCallSignChange}/>
+                        <ControlLabel>Call Sign</ControlLabel>
+                        <FormControl componentClass='select' required
+                                     value={this.state.callSign}
+                                     onChange={this.onCallSignChange}
+                                     id='callSign-select'>
+                            <option value='' hidden>Choose a call sign</option>
+                            {this.state.callSigns.map(callSign =>
+                                <option key={callSign.agentId} value={callSign.agentId}>{callSign.callSign}, {callSign.firstName}</option>)}
+                        </FormControl>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Location</ControlLabel>
-                        <FormControl type='number'
-                            placeholder='Enter location ID'
-                            value={this.state.locationId}
-                            onChange={this.onLocationChange}/>
+                        <FormControl componentClass='select' required
+                                     value={this.state.locationId}
+                                     onChange={this.onLocationChange}
+                                     id='location-select'>
+                            <option value='' hidden>Choose a location</option>
+                            {this.state.locations.map(location =>
+                                <option key={location.locationId} value={location.locationId}>{location.location}, {location.siteName}</option>)}
+                        </FormControl>
                     </FormGroup>
                     <FormGroup className='form-inline'>
                         <ControlLabel className='rm-3'>From</ControlLabel>
@@ -74,11 +94,11 @@ export default class LocationReportsSearch extends React.Component {
     }
 
     onCallSignChange(event) {
-        this.setState({ callSign: event.target.value });
+        this.setState({ callSign: event.target.value && parseInt(event.target.value) });
     }
 
     onLocationChange(event) {
-        this.setState({ locationId: parseInt(event.target.value) });
+        this.setState({ locationId: event.target.value && parseInt(event.target.value) });
     }
 
     onFromChange(event) {
@@ -121,4 +141,5 @@ export default class LocationReportsSearch extends React.Component {
             .then(results => this.setState({ results: results, message: {} }))
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
+
 }
