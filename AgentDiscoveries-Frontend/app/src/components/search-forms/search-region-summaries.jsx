@@ -47,9 +47,9 @@ export default class RegionSummariesSearch extends React.Component {
                     <FormGroup>
                         <ControlLabel>Region</ControlLabel>
                         <FormControl componentClass='select' required
-                                     value={this.state.regionId}
-                                     onChange={this.onRegionChange}
-                                     id='callSign-select'>
+                            value={this.state.regionId}
+                            onChange={this.onRegionChange}
+                            id='callSign-select'>
                             <option value='' hidden>Choose a call sign</option>
                             {this.state.regions.map(region =>
                                 <option key={region.regionId} value={region.regionId}>{region.name}, {region.name}</option>)}
