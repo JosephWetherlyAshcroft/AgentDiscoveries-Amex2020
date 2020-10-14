@@ -30,12 +30,13 @@ export default class LocationReportsSearch extends React.Component {
         this.onLocationChange = this.onLocationChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
+
     componentWillMount() {
         apiGet('locations')
-            .then(results => this.setState({ locations: results }))
+            .then(results => this.setState({locations: results}))
             .catch(() => this.addMessage('Error fetching locations, please try again later', 'danger'));
         apiGet('agents')
-            .then(results => this.setState({ callSigns: results }))
+            .then(results => this.setState({callSigns: results}))
             .catch(() => this.addMessage('Error fetching locations, please try again later', 'danger'));
     }
 
@@ -45,28 +46,30 @@ export default class LocationReportsSearch extends React.Component {
                 <Form onSubmit={this.onSubmit}>
                     <h3>Search Location Reports</h3>
 
-                    <Message message={this.state.message} />
+                    <Message message={this.state.message}/>
 
                     <FormGroup>
                         <ControlLabel>Call Sign</ControlLabel>
                         <FormControl componentClass='select' required
-                                     value={this.state.callSign}
-                                     onChange={this.onCallSignChange}
-                                     id='callSign-select'>
+                            value={this.state.callSign}
+                            onChange={this.onCallSignChange}
+                            id='callSign-select'>
                             <option value='' hidden>Choose a call sign</option>
                             {this.state.callSigns.map(callSign =>
-                                <option key={callSign.agentId} value={callSign.agentId}>{callSign.callSign}, {callSign.firstName}</option>)}
+                                <option key={callSign.agentId}
+                                    value={callSign.agentId}>{callSign.callSign}, {callSign.firstName}</option>)}
                         </FormControl>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Location</ControlLabel>
                         <FormControl componentClass='select' required
-                                     value={this.state.locationId}
-                                     onChange={this.onLocationChange}
-                                     id='location-select'>
+                            value={this.state.locationId}
+                            onChange={this.onLocationChange}
+                            id='location-select'>
                             <option value='' hidden>Choose a location</option>
                             {this.state.locations.map(location =>
-                                <option key={location.locationId} value={location.locationId}>{location.location}, {location.siteName}</option>)}
+                                <option key={location.locationId}
+                                    value={location.locationId}>{location.location}, {location.siteName}</option>)}
                         </FormControl>
                     </FormGroup>
                     <FormGroup className='form-inline'>
@@ -82,29 +85,30 @@ export default class LocationReportsSearch extends React.Component {
                     </FormGroup>
                     <Button type='submit'>Search</Button>
                 </Form>
-                <SearchResult results={this.state.results} />
+                <SearchResult results={this.state.results}/>
             </div>
         );
     }
 
     onCallSignChange(event) {
-        this.setState({ callSign: event.target.value && parseInt(event.target.value) });
+        this.setState({callSign: event.target.value && parseInt(event.target.value)});
     }
 
     onLocationChange(event) {
-        this.setState({ locationId: event.target.value && parseInt(event.target.value) });
+        this.setState({locationId: event.target.value && parseInt(event.target.value)});
     }
 
     onFromChange(event) {
-        this.setState({ fromTime: event.target.value });
+        this.setState({fromTime: event.target.value});
     }
 
     onToChange(event) {
-        this.setState({ toTime: event.target.value });
+        this.setState({toTime: event.target.value});
     }
 
     onSubmit(event) {
         event.preventDefault();
+        console.log(this.state);
         const params = {
             callSign: this.state.callSign,
             locationId: this.state.locationId,
@@ -113,12 +117,11 @@ export default class LocationReportsSearch extends React.Component {
         };
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
         apiGet(url)
-            .then(results => this.setState({ results: results, message: {} }))
+            .then(results => this.setState({results: results, message: {}}))
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
-<<<<<<< HEAD
 
-    loadNextPage(event){
+    loadNextPage(event) {
         event.preventDefault();
         console.log('ahoj 1');
         console.log(this);
@@ -127,14 +130,12 @@ export default class LocationReportsSearch extends React.Component {
             locationId: this.state.locationId,
             fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
             toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString(),
-            resultsRange:'2-3'
+            resultsRange: '2-3'
         };
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
         apiGet(url)
-            .then(results => this.setState({ results: results, message: {} }))
+            .then(results => this.setState({results: results, message: {}}))
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
 
-=======
->>>>>>> parent of 6c9b583... before rebasing to master
 }
