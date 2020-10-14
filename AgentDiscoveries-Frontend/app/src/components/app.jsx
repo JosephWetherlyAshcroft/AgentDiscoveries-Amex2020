@@ -12,6 +12,7 @@ import LocationReportSearch from './search-forms/search-location-reports';
 import RegionSummarySearch from './search-forms/search-region-summaries';
 import LocationReportSubmit from './submit-forms/submit-location-report';
 import RegionSummarySubmit from './submit-forms/submit-region-summary';
+import LocationReport from './admin/location-report';
 import Entities from './admin/entities-view';
 import TodaysCodePage from './todays-code-page';
 import LocationForm from './admin/location-form';
@@ -43,7 +44,7 @@ export default class App extends React.Component {
                         <Route path='/admin/locations/edit/:id' render={props => <Page><LocationForm id={props.match.params.id} /></Page>} />
                         <Route path='/admin/regions/edit/:id' render={props => <Page><RegionForm id={props.match.params.id} /></Page>} />
                         <Route path='/admin/users/edit/:id' render={props => <Page><UserForm id={props.match.params.id} /></Page>} />
-
+                        <Route path='/admin/locationReport/:id' render={props => <Page><LocationReport id={props.match.params.id}/></Page>} />
                         <Route path='/message' render={() => <Page><TodaysCodePage /></Page>} />
                         <Route path='/profile' exact render={() => <Page><Profile /></Page>} />
                         <Route path='/profile/edit/callsign' render={() => <Page><EditProfileCallSign /></Page>} />
