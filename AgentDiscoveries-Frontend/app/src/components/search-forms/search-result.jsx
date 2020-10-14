@@ -27,7 +27,7 @@ export default class SearchResult extends React.Component {
 
     renderResultBody(result) {
         return Object.keys(result).map(key => {
-            return <p key={key} id={key}>{`${key}: ${result[key]}`}</p>;
+            return <p key={key} id={key}>{`${key}: ${this.truncate(result[key], 140)}`}</p>;
         });
     }
 
@@ -51,5 +51,7 @@ export default class SearchResult extends React.Component {
         return <button onClick={this.downloadReport.bind(e)}>Download as PDF</button>;
     }
 
-
+    truncate(string, chars){
+        return string.length > chars ? string.substring(0, chars) + '..' : string;
+    }
 }
