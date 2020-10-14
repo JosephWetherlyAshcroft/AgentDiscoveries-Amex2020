@@ -43,6 +43,7 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
 
     public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
         implementAgentCall_Sign(searchCriteria);
+        int[] resultsRange = extractPagination(searchCriteria);
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(searchCriteria);

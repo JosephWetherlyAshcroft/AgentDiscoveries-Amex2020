@@ -87,7 +87,6 @@ public class LocationStatusReportsRoutes extends ReportsRoutesBase<LocationStatu
 
         if (!isNullOrEmpty(queryMap.get("callSign").value())) {
             searchCriteria.add(new AgentCallSignSearchCriterion(queryMap.get("callSign").value()));
-            //searchCriteria.add(n);
         }
 
         if (!isNullOrEmpty(queryMap.get("locationId").value())) {
@@ -100,6 +99,10 @@ public class LocationStatusReportsRoutes extends ReportsRoutesBase<LocationStatu
 
         if (!isNullOrEmpty(queryMap.get("toTime").value())) {
             searchCriteria.add(new ToTimeSearchCriterion(ZonedDateTime.parse(queryMap.get("toTime").value())));
+        }
+
+        if (!isNullOrEmpty(queryMap.get("resultsRange").value())) {
+            searchCriteria.add(new ResultsRangeSearchCriterion(queryMap.get("resultsRange").value()));
         }
 
         return searchCriteria;
