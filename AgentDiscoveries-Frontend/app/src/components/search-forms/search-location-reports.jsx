@@ -106,13 +106,16 @@ export default class LocationReportsSearch extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
-        console.log(this.state);
+        // console.log(this.state);
         const params = {
             callSign: this.state.callSign,
             locationId: this.state.locationId,
             fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
-            toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString()
+            toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString(),
+            resultsRange: '2-3'
+            // resultsRange: ''
         };
+        console.log("Miro url params: ",params);
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
         apiGet(url)
             .then(results => this.setState({results: results, message: {}}))
@@ -121,8 +124,7 @@ export default class LocationReportsSearch extends React.Component {
 
     loadNextPage(event) {
         event.preventDefault();
-        console.log('ahoj 1');
-        console.log(this);
+        // console.log(this);
         const params = {
             callSign: this.state.callSign,
             locationId: this.state.locationId,

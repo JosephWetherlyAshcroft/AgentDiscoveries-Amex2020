@@ -10,10 +10,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
 
@@ -42,17 +39,12 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
     }
 
     public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
+        implementAgentCall_Sign(searchCriteria);
+        System.out.println("ahoj 2221");
 
-
+        int[] resultsRange = extractPaginationRange(searchCriteria);
 
         EntityManager em = entityManagerFactory.createEntityManager();
-
-        System.out.println("ahoj");
-
-        implementAgentCall_Sign(searchCriteria);
-        //int[] resultsRange = extractPagination(searchCriteria);
-        //no error registered
-
         em.getTransaction().begin();
         String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(searchCriteria);
         TypedQuery<LocationStatusReport> query = em.createQuery("FROM LocationStatusReport" + whereClause, LocationStatusReport.class);
@@ -104,5 +96,33 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
             emForAgentQuery.close();
             searchCriteria.add(new AgentIdSearchCriterion(agentId));
         }
+    }
+
+    private int[] extractPaginationRange(List<ReportSearchCriterion> searchCriteria) {
+        String resultsRangeAsString = "";
+        ReportSearchCriterion searchCriterionToRemove = null;
+        for (ReportSearchCriterion criterion : searchCriteria) {
+            for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
+                if (bindingEntry.getKey().equals("results_range_sc_results_range")) {
+                    //System.out.println("AA "+bindingEntry.getKey());
+                    //System.out.println("BB "+bindingEntry.getValue());
+                    resultsRangeAsString = (String) bindingEntry.getValue();
+                    searchCriterionToRemove = criterion;
+                }
+            }
+        }
+        System.out.println("resultsRangeAsString: " + resultsRangeAsString);
+        int[]rangesAsNumber = new int[2];
+        if (resultsRangeAsString.length() > 0) {
+            searchCriteria.remove(searchCriterionToRemove);
+            String[] ranges =resultsRangeAsString.split("-");
+            rangesAsNumber = Arrays
+                    .stream(ranges)
+                    .mapToInt(numberAsString-> Integer.parseInt(numberAsString))
+                    .toArray();
+        }
+
+        System.out.println(Arrays.toString(rangesAsNumber));
+        return rangesAsNumber;
     }
 }
