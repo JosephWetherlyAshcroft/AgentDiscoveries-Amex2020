@@ -55,7 +55,7 @@ export default class LocationReportsSearch extends React.Component {
                                      id='callSign-select'>
                             <option value='' hidden>Choose a call sign</option>
                             {this.state.callSigns.map(callSign =>
-                                <option key={callSign.agentId} value={callSign.agentId}>{callSign.callSign}, {callSign.firstName}</option>)}
+                                <option key={callSign.callSign} value={callSign.callSign}>{callSign.callSign}, {callSign.firstName}</option>)}
                         </FormControl>
                     </FormGroup>
                     <FormGroup>
@@ -88,7 +88,7 @@ export default class LocationReportsSearch extends React.Component {
     }
 
     onCallSignChange(event) {
-        this.setState({ callSign: event.target.value && parseInt(event.target.value) });
+        this.setState({ callSign: event.target.value});
     }
 
     onLocationChange(event) {
