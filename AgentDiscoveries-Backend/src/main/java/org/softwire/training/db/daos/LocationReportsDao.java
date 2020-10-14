@@ -42,9 +42,17 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
     }
 
     public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
-        implementAgentCall_Sign(searchCriteria);
-        int[] resultsRange = extractPagination(searchCriteria);
+
+
+
         EntityManager em = entityManagerFactory.createEntityManager();
+
+        System.out.println("ahoj");
+
+        implementAgentCall_Sign(searchCriteria);
+        //int[] resultsRange = extractPagination(searchCriteria);
+        //no error registered
+
         em.getTransaction().begin();
         String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(searchCriteria);
         TypedQuery<LocationStatusReport> query = em.createQuery("FROM LocationStatusReport" + whereClause, LocationStatusReport.class);
@@ -64,6 +72,8 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
         ReportSearchCriterion searchCriterionToRemove = null;
         for (ReportSearchCriterion criterion : searchCriteria) {
             for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
+                //System.out.println(bindingEntry.getKey());
+                //System.out.println(bindingEntry.getValue());
                 if (bindingEntry.getKey().equals("call_sign_sc_call_sign")) {
                     agentCallSign = (String) bindingEntry.getValue();
                     searchCriterionToRemove = criterion;
