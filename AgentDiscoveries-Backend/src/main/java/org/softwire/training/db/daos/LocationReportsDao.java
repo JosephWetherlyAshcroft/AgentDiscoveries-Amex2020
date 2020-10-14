@@ -41,8 +41,9 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
     public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
         implementAgentCall_Sign(searchCriteria);
         System.out.println("ahoj 2221");
-
         int[] resultsRange = extractPaginationRange(searchCriteria);
+
+
 
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
