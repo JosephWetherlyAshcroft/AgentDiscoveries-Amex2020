@@ -20,6 +20,8 @@ export default class LocationReportsSearch extends React.Component {
             toTime: '',
 
             results: [],
+            resultsRangeFrom0: [0,3],
+            miroTest:'miro1',
             message: {}
         };
 
@@ -29,6 +31,8 @@ export default class LocationReportsSearch extends React.Component {
         this.onToChange = this.onToChange.bind(this);
         this.onLocationChange = this.onLocationChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.loadNextPage = this.loadNextPage.bind(this);
+
     }
 
     componentWillMount() {
@@ -82,6 +86,7 @@ export default class LocationReportsSearch extends React.Component {
                             onChange={this.onToChange}/>
                     </FormGroup>
                     <Button type='submit'>Search</Button>
+                    <button onClick={this.loadNextPage}>Next {this.state.miroTest}</button>
                 </Form>
                 <SearchResult results={this.state.results} />
             </div>
@@ -106,31 +111,34 @@ export default class LocationReportsSearch extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
-        // console.log(this.state);
+
+        //set result range to default values
+
         const params = {
             callSign: this.state.callSign,
             locationId: this.state.locationId,
             fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
             toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString(),
-            resultsRange: '2-3'
-            // resultsRange: ''
+            resultsRange: `${this.state.resultsRangeFrom0[0]}-${this.state.resultsRangeFrom0[1]}`
+
         };
         console.log("Miro url params: ",params);
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
         apiGet(url)
-            .then(results => this.setState({results: results, message: {}}))
+            .then(results => this.setState({results: results, message: {},miroTest:'miro2'}))
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
 
     loadNextPage(event) {
         event.preventDefault();
         // console.log(this);
+        // this.setState({resultsRangeFrom0:})
         const params = {
             callSign: this.state.callSign,
             locationId: this.state.locationId,
             fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
             toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString(),
-            resultsRange: '2-3'
+            resultsRangeFrom0: `${this.state.resultsRangeFrom0[0]}-${this.state.resultsRangeFrom0[1]}`
         };
         const url = 'reports/locationstatuses?' + QueryString.stringify(params);
         apiGet(url)
