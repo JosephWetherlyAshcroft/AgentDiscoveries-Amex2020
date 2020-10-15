@@ -56,44 +56,44 @@ export default class LocationReportsSearch extends React.Component {
                     <FormGroup>
                         <ControlLabel>Call Sign</ControlLabel>
                         <FormControl componentClass='select' required
-                                     value={this.state.callSign}
-                                     onChange={this.onCallSignChange}
-                                     id='callSign-select'>
+                            value={this.state.callSign}
+                            onChange={this.onCallSignChange}
+                            id='callSign-select'>
                             <option value='' hidden>Choose a call sign</option>
                             {this.state.callSigns.map(callSign =>
                                 <option key={callSign.callSign}
-                                        value={callSign.callSign}>{callSign.callSign}, {callSign.firstName}</option>)}
+                                    value={callSign.callSign}>{callSign.callSign}, {callSign.firstName}</option>)}
                         </FormControl>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Location</ControlLabel>
                         <FormControl componentClass='select' required
-                                     value={this.state.locationId}
-                                     onChange={this.onLocationChange}
-                                     id='location-select'>
+                            value={this.state.locationId}
+                            onChange={this.onLocationChange}
+                            id='location-select'>
                             <option value='' hidden>Choose a location</option>
                             {this.state.locations.map(location =>
                                 <option key={location.locationId}
-                                        value={location.locationId}>{location.location}, {location.siteName}</option>)}
+                                    value={location.locationId}>{location.location}, {location.siteName}</option>)}
                         </FormControl>
                     </FormGroup>
                     <FormGroup className='form-inline'>
                         <ControlLabel className='rm-3'>From</ControlLabel>
                         <FormControl className='rm-3' type='date'
-                                     value={this.state.fromTime}
-                                     onChange={this.onFromChange}/>
+                            value={this.state.fromTime}
+                            onChange={this.onFromChange}/>
 
                         <ControlLabel className='rm-3'>To</ControlLabel>
                         <FormControl className='rm-3' type='date'
-                                     value={this.state.toTime}
-                                     onChange={this.onToChange}/>
+                            value={this.state.toTime}
+                            onChange={this.onToChange}/>
                     </FormGroup>
                     <Button type='submit'>Search</Button>
                     <div className='previous_nextButtons'>
                         <Button id='previousLotOfResultsButton'
-                                onClick={this.loadPreviousPage}>Previous</Button>
+                            onClick={this.loadPreviousPage}>Previous</Button>
                         <Button id='nextLotOfResultsButton'
-                                onClick={this.loadNextPage}>Next</Button>
+                            onClick={this.loadNextPage}>Next</Button>
                     </div>
                 </Form>
                 <SearchResult results={this.state.results}/>
@@ -123,7 +123,7 @@ export default class LocationReportsSearch extends React.Component {
         apiGet(url)
             .then(results => {
                 if (results.length === this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'visible';
-                this.setState({results: results, message: {}})
+                this.setState({results: results, message: {}});
             })
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
     }
@@ -142,7 +142,7 @@ export default class LocationReportsSearch extends React.Component {
                     if (results.length < this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'hidden';
                     document.querySelector('#previousLotOfResultsButton').style.visibility = 'visible';
                     if (results.length > 0) {
-                        this.setState({results: results, message: {}})
+                        this.setState({results: results, message: {}});
                     }
                 })
                 .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
@@ -164,7 +164,7 @@ export default class LocationReportsSearch extends React.Component {
                 .then(results => {
                     if (this.state.results.length > 0) document.querySelector('#nextLotOfResultsButton').style.visibility = 'visible';
                     else document.querySelector('#nextLotOfResultsButton').style.visibility = 'hidden';
-                    this.setState({results: results, message: {}})
+                    this.setState({results: results, message: {}});
                 })
                 .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
         });
