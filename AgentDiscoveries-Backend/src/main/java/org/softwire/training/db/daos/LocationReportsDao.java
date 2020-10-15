@@ -40,21 +40,17 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
 
     public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
         implementAgentCall_Sign(searchCriteria);
-        System.out.println("ahoj 22210");
         int[] resultsRange = extractPaginationRange(searchCriteria);
-
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(searchCriteria);
-        //System.out.println(whereClause);
-        //TypedQuery<LocationStatusReport> query = em.createQuery("FROM LocationStatusReport" + whereClause + "LIMIT 5", LocationStatusReport.class);
         TypedQuery<LocationStatusReport> query = em.createQuery("FROM LocationStatusReport" + whereClause, LocationStatusReport.class);
         for (ReportSearchCriterion criterion : searchCriteria) {
             for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
                 query = query.setParameter(bindingEntry.getKey(), bindingEntry.getValue());
             }
         }
-        query.setFirstResult(resultsRange[0]); //starting position from 0 (can't be negative; can be bigger than number of results)
+        query.setFirstResult(resultsRange[0]);
         query.setMaxResults(resultsRange[1]-resultsRange[0]+1);
 
         List<LocationStatusReport> results = query.getResultList();

@@ -91,7 +91,7 @@ export default class LocationReportsSearch extends React.Component {
                                      onChange={this.onToChange}/>
                     </FormGroup>
                     <Button type='submit'>Search</Button>
-                    <div className="previous_nextButtons">
+                    <div className='previous_nextButtons'>
                         <Button id='previousLotOfResultsButton'
                                 onClick={this.loadPreviousPage}>Previous {this.state.miroTest}</Button>
                         <Button id='nextLotOfResultsButton'
@@ -121,12 +121,9 @@ export default class LocationReportsSearch extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
-        console.log("Miro url params: ", this.getSearchParametersFromState());
         const url = 'reports/locationstatuses?' + QueryString.stringify(this.getSearchParametersFromState());
         apiGet(url)
             .then(results => {
-                //check the length of results, if < max, hide "next" button
-                console.log("numberOfResults received from backend: ", results.length);
                 if (results.length === this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'visible';
                 this.setState({results: results, message: {}})
             })
