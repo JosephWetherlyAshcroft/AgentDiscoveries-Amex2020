@@ -3,8 +3,6 @@ import {MenuItem, Nav, Navbar, NavDropdown, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {clearUserInfo, isAdmin, isLoggedIn, isAgent, currentUserId} from './utilities/user-helper';
 import logo from '../../static/agent.png';
-import {apiGet} from "./utilities/request-helper";
-import {errorLogAndRedirect} from "./error";
 
 export default class NavigationBar extends React.Component {
     constructor(props) {
