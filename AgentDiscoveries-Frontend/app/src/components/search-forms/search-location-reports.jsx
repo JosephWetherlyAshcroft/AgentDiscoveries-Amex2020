@@ -34,8 +34,6 @@ export default class LocationReportsSearch extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.loadNextPage = this.loadNextPage.bind(this);
         this.loadPreviousPage = this.loadPreviousPage.bind(this);
-
-
     }
 
     componentWillMount() {
@@ -93,9 +91,9 @@ export default class LocationReportsSearch extends React.Component {
                     <Button type='submit'>Search</Button>
                     <div className='previous_nextButtons'>
                         <Button id='previousLotOfResultsButton'
-                                onClick={this.loadPreviousPage}>Previous {this.state.miroTest}</Button>
+                                onClick={this.loadPreviousPage}>Previous</Button>
                         <Button id='nextLotOfResultsButton'
-                                onClick={this.loadNextPage}>Next {this.state.miroTest}</Button>
+                                onClick={this.loadNextPage}>Next</Button>
                     </div>
                 </Form>
                 <SearchResult results={this.state.results}/>
@@ -143,9 +141,7 @@ export default class LocationReportsSearch extends React.Component {
                 .then(results => {
                     if (results.length < this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'hidden';
                     document.querySelector('#previousLotOfResultsButton').style.visibility = 'visible';
-                    if(results.length===0) {
-                        return;
-                    } else {
+                    if (results.length > 0) {
                         this.setState({results: results, message: {}})
                     }
                 })
