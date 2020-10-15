@@ -1,4 +1,5 @@
 package org.softwire.training.models;
+import org.softwire.training.api.models.ErrorCode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -6,12 +7,16 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class ReportBase {
 
+
     private int reportId;
     private byte status;
     private LocalDateTime reportTime; // Always UTC in the DB
     private String reportBody;
     private String title;
     private int agentId;
+
+
+
 
     @Id
     @Column(name = "report_id", nullable = false)
@@ -24,11 +29,16 @@ public class ReportBase {
         this.reportId = reportId;
     }
 
+
     @Column(name = "status", nullable = false)
     public byte getStatus() {
+        if (status<= 100) {
+        }
+         else {
+             status=Byte.parseByte(String.valueOf(ErrorCode.INVALID_INPUT));
+        }
         return status;
     }
-
     public void setStatus(byte status) {
         this.status = status;
     }
@@ -66,6 +76,4 @@ public class ReportBase {
     @Column(name = "agent_id", nullable = false)
     public int getAgentId() { return agentId; }
 
-    public void setAgentId(int agentId) { this.agentId = agentId; }
-
-}
+    public void setAgentId(int agentId) { this.agentId = agentId; }}

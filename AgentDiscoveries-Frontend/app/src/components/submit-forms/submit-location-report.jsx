@@ -64,7 +64,7 @@ export default class LocationReportSubmit extends React.Component {
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>Status</ControlLabel>
-                        <FormControl type='number' required
+                        <FormControl type='number' max={100}
                             placeholder='Enter numeric status code'
                             value={this.state.status}
                             onChange={this.onStatusChange}
@@ -128,9 +128,20 @@ export default class LocationReportSubmit extends React.Component {
             sendExternal: this.state.sendExternal
         };
 
-        apiPost('reports/locationstatuses', body)
-            .then(() => this.addMessage('Report submitted', 'info'))
-            .catch(() => this.addMessage('Error submitting report, please try again later', 'danger'));
+
+
+        apiPost('reports/locationstatuses', body);
+        if(this.state.status>100){
+            apiPost('status/reports',body)
+                .then(() => this.addMessage('Report submitted', 'info'))
+                .catch(() => this.addMessage('Error with status - make sure its less than or equal to 100', 'danger'));
+        }
+        else{
+            apiPost('reports/locationstatuses',body)
+                .then(()=> this.addMessage('Report submitted','info'))
+                .catch(()=> this.addMessage('Error submitting report, please try again later','danger'));
+        }
+
 
 
         if (this.state.sendExternal) {
