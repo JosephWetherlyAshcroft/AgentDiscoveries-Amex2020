@@ -8,11 +8,13 @@ export default class UserForm extends React.Component {
     constructor(props) {
         super(props);
 
+
         this.state = {
             username: '',
             password: '',
             isAgent: false,
             isAdmin: false,
+
 
             agentId: '',
 
@@ -60,7 +62,7 @@ export default class UserForm extends React.Component {
                         </FormGroup>
                         <FormGroup>
                             <Checkbox type='checkbox'
-                                value={this.state.isAgent}
+                                value={this.state.checked}
                                 onChange={this.onIsAgentUpdate}>
                                 Agent
                             </Checkbox>
@@ -92,10 +94,14 @@ export default class UserForm extends React.Component {
 
     onIsAgentUpdate(event) {
         this.setState({ isAgent: event.target.checked });
+        console.log(this.state)
+        console.log(event.target.checked)
     }
 
     onIsAdminUpdate(event) {
         this.setState({ isAdmin: event.target.checked });
+        console.log(this.state)
+        console.log(event.target.checked)
     }
 
     onAgentUpdate(agent) {
@@ -104,6 +110,7 @@ export default class UserForm extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
+        console.log(this.state)
 
         const agentIdPromise = this.state.isAgent
             ? this.state.agentId

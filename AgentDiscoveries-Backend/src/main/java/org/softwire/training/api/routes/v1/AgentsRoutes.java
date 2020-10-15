@@ -27,8 +27,15 @@ public class AgentsRoutes {
     }
 
     public Agent createAgent(Request req, Response res) {
-        Agent agentModel = JsonRequestUtils.readBodyAsType(req, Agent.class);
         permissionsVerifier.verifyAdminPermission(req);
+        Agent agentModel = JsonRequestUtils.readBodyAsType(req, Agent.class);
+        System.out.println(agentModel);
+        System.out.println(agentModel.getAgentId());
+        System.out.println(agentModel.getCallSign());
+        System.out.println(agentModel.getDateOfBirth());
+        System.out.println(agentModel.getFirstName());
+        System.out.println(agentModel.getLastName());
+        System.out.println(agentModel.getRank());
 
         int agentId = agentsDao.createAgent(agentModel);
         agentModel.setAgentId(agentId);

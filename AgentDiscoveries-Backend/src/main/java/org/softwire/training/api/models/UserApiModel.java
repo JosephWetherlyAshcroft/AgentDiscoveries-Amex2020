@@ -46,6 +46,7 @@ public class UserApiModel {
     }
 
     public boolean isAdmin() {
+        System.out.println(admin);
         return admin;
     }
 
