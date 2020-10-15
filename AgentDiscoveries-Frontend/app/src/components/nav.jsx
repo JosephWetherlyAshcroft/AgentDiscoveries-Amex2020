@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {MenuItem, Nav, Navbar, NavDropdown, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
-import {clearUserInfo, isAdmin, isLoggedIn} from './utilities/user-helper';
+import {clearUserInfo, isAdmin, isLoggedIn, isAgent, currentUserId} from './utilities/user-helper';
 import logo from '../../static/agent.png';
 
 export default class NavigationBar extends React.Component {
@@ -10,7 +10,8 @@ export default class NavigationBar extends React.Component {
 
         this.state = {
             isLoggedIn: isLoggedIn(),
-            isAdmin: isAdmin()
+            isAdmin: isAdmin(),
+            isAgent: isAgent()
         };
 
         this.onLoginEvent = this.onLoginEvent.bind(this);
@@ -28,7 +29,8 @@ export default class NavigationBar extends React.Component {
     onLoginEvent() {
         this.setState({
             isLoggedIn: isLoggedIn(),
-            isAdmin: isAdmin()
+            isAdmin: isAdmin(),
+            isAgent: isAgent()
         });
     }
 
@@ -57,15 +59,9 @@ export default class NavigationBar extends React.Component {
         return (
             <Navbar.Collapse>
                 {this.state.isAdmin ? this.renderAdminOptions() : null}
+                {this.state.isAgent ? this.renderAgentOptions() : null}
+
                 <Nav>
-                    <NavDropdown eventKey={4} title='Submit' id='basic-nav-dropdown'>
-                        <MenuItem componentClass={Link} href='/submit/location' to='/submit/location' eventKey={4.1}>
-                            Location Report
-                        </MenuItem>
-                        <MenuItem componentClass={Link} href='/submit/region' to='/submit/region' eventKey={4.2}>
-                            Region Summary
-                        </MenuItem>
-                    </NavDropdown>
                     <NavItem componentClass={Link} href='/message' to='/message' eventKey={5}>
                         Today's Message
                     </NavItem>
@@ -108,6 +104,21 @@ export default class NavigationBar extends React.Component {
         );
     }
 
+    renderAgentOptions(){
+        return(
+            <Nav>
+                <NavDropdown eventKey={4} title='Submit' id='basic-nav-dropdown'>
+                    <MenuItem componentClass={Link} href='/submit/location' to='/submit/location' eventKey={4.1}>
+                        Location Report
+                    </MenuItem>
+                    <MenuItem componentClass={Link} href='/submit/region' to='/submit/region' eventKey={4.2}>
+                        Region Summary
+                    </MenuItem>
+                </NavDropdown>
+            </Nav>
+        );
+    }
+
     renderLoggedOut() {
         return (
             <Navbar.Collapse>
@@ -119,6 +130,7 @@ export default class NavigationBar extends React.Component {
             </Navbar.Collapse>
         );
     }
+
 
     handleLogOut(event) {
         event.preventDefault();
