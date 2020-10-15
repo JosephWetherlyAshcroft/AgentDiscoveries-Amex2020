@@ -9,6 +9,7 @@ import {apiGet} from '../utilities/request-helper';
 export default class LocationReportsSearch extends React.Component {
     constructor(props) {
         super(props);
+        let resultsPerPageDefault = 4;
 
         this.state = {
             locations: [],
@@ -20,6 +21,8 @@ export default class LocationReportsSearch extends React.Component {
             toTime: '',
 
             results: [],
+            resultsPerPage: resultsPerPageDefault,
+            resultsRangeFrom0: [0, resultsPerPageDefault - 1],
             message: {}
         };
 
@@ -30,13 +33,16 @@ export default class LocationReportsSearch extends React.Component {
         this.onToChange = this.onToChange.bind(this);
         this.onLocationChange = this.onLocationChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.loadNextPage = this.loadNextPage.bind(this);
+        this.loadPreviousPage = this.loadPreviousPage.bind(this);
     }
+
     componentWillMount() {
         apiGet('locations')
-            .then(results => this.setState({ locations: results }))
+            .then(results => this.setState({locations: results}))
             .catch(() => this.addMessage('Error fetching locations, please try again later', 'danger'));
         apiGet('agents')
-            .then(results => this.setState({ callSigns: results }))
+            .then(results => this.setState({callSigns: results}))
             .catch(() => this.addMessage('Error fetching locations, please try again later', 'danger'));
     }
 
@@ -63,7 +69,8 @@ export default class LocationReportsSearch extends React.Component {
                             id='callSign-select'>
                             <option value='' hidden>Choose a call sign</option>
                             {this.state.callSigns.map(callSign =>
-                                <option key={callSign.callSign} value={callSign.callSign}>{callSign.callSign}, {callSign.firstName}</option>)}
+                                <option key={callSign.callSign}
+                                    value={callSign.callSign}>{callSign.callSign}, {callSign.firstName}</option>)}
                         </FormControl>
                     </FormGroup>
                     <FormGroup>
@@ -74,7 +81,8 @@ export default class LocationReportsSearch extends React.Component {
                             id='location-select'>
                             <option value='' hidden>Choose a location</option>
                             {this.state.locations.map(location =>
-                                <option key={location.locationId} value={location.locationId}>{location.location}, {location.siteName}</option>)}
+                                <option key={location.locationId}
+                                    value={location.locationId}>{location.location}, {location.siteName}</option>)}
                         </FormControl>
                     </FormGroup>
                     <FormGroup className='form-inline'>
@@ -89,8 +97,14 @@ export default class LocationReportsSearch extends React.Component {
                             onChange={this.onToChange}/>
                     </FormGroup>
                     <Button type='submit'>Search</Button>
+                    <div className='previous_nextButtons'>
+                        <Button id='previousLotOfResultsButton'
+                            onClick={this.loadPreviousPage}>Previous</Button>
+                        <Button id='nextLotOfResultsButton'
+                            onClick={this.loadNextPage}>Next</Button>
+                    </div>
                 </Form>
-                <SearchResult results={this.state.results} />
+                <SearchResult results={this.state.results}/>
             </div>
         );
     }
@@ -99,34 +113,82 @@ export default class LocationReportsSearch extends React.Component {
     }
 
     onCallSignChange(event) {
-        this.setState({ callSign: event.target.value});
+        this.setState({callSign: event.target.value});
     }
 
     onLocationChange(event) {
-        this.setState({ locationId: event.target.value && parseInt(event.target.value) });
+        this.setState({locationId: event.target.value && parseInt(event.target.value)});
     }
 
     onFromChange(event) {
-        this.setState({ fromTime: event.target.value });
+        this.setState({fromTime: event.target.value});
     }
 
     onToChange(event) {
-        this.setState({ toTime: event.target.value });
+        this.setState({toTime: event.target.value});
     }
 
     onSubmit(event) {
         event.preventDefault();
-        const params = {
+        const url = 'reports/locationstatuses?' + QueryString.stringify(this.getSearchParametersFromState());
+        apiGet(url)
+            .then(results => {
+                if (results.length === this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'visible';
+                this.setState({results: results, message: {}});
+            })
+            .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
+    }
+
+    loadNextPage(event) {
+        event.preventDefault();
+        this.setState(previousState => ({
+            resultsRangeFrom0: [
+                previousState.resultsRangeFrom0[0] + previousState.resultsPerPage,
+                previousState.resultsRangeFrom0[1] + previousState.resultsPerPage
+            ]
+        }), () => {
+            const url = 'reports/locationstatuses?' + QueryString.stringify(this.getSearchParametersFromState());
+            apiGet(url)
+                .then(results => {
+                    if (results.length < this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'hidden';
+                    document.querySelector('#previousLotOfResultsButton').style.visibility = 'visible';
+                    if (results.length > 0) {
+                        this.setState({results: results, message: {}});
+                    }
+                })
+                .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
+        });
+    }
+
+    loadPreviousPage(event) {
+        event.preventDefault();
+        this.setState(previousState => ({
+            resultsRangeFrom0: [
+                previousState.resultsRangeFrom0[0] - previousState.resultsPerPage,
+                previousState.resultsRangeFrom0[1] - previousState.resultsPerPage
+            ]
+        }), () => {
+            if (this.state.resultsRangeFrom0[0] <= 0) document.querySelector('#previousLotOfResultsButton').style.visibility = 'hidden';
+            if (this.state.resultsRangeFrom0[0] < 0) return;
+            const url = 'reports/locationstatuses?' + QueryString.stringify(this.getSearchParametersFromState());
+            apiGet(url)
+                .then(results => {
+                    if (this.state.results.length > 0) document.querySelector('#nextLotOfResultsButton').style.visibility = 'visible';
+                    else document.querySelector('#nextLotOfResultsButton').style.visibility = 'hidden';
+                    this.setState({results: results, message: {}});
+                })
+                .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
+        });
+    }
+
+    getSearchParametersFromState() {
+        return ({
             title: this.state.title,
             callSign: this.state.callSign,
             locationId: this.state.locationId,
             fromTime: this.state.fromTime && moment.utc(this.state.fromTime).startOf('day').toISOString(),
-            toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString()
-        };
-        const url = 'reports/locationstatuses?' + QueryString.stringify(params);
-        apiGet(url)
-            .then(results => this.setState({ results: results, message: {} }))
-            .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
+            toTime: this.state.toTime && moment.utc(this.state.toTime).endOf('day').toISOString(),
+            resultsRange: `${this.state.resultsRangeFrom0[0]}-${this.state.resultsRangeFrom0[1]}`
+        });
     }
-
 }

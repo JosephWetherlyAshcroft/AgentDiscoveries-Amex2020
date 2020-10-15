@@ -105,3 +105,10 @@ body {
 .search-panel-heading > span {
   margin-right: auto;
 }
+
+.previous_nextButtons{
+  visibility:hidden;
+  margin-top: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}

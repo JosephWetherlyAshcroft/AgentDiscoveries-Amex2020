@@ -11,10 +11,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
 
@@ -43,8 +40,8 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
     }
 
     public List<LocationStatusReport> searchReports(List<ReportSearchCriterion> searchCriteria) {
-
         implementAgentCall_Sign(searchCriteria);
+        int[] resultsRange = extractPaginationRange(searchCriteria);
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         String whereClause = ReportsDaoUtils.buildWhereSubClauseFromCriteria(searchCriteria);
@@ -54,6 +51,9 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
                 query = query.setParameter(bindingEntry.getKey(), bindingEntry.getValue());
             }
         }
+        query.setFirstResult(resultsRange[0]);
+        query.setMaxResults(resultsRange[1]-resultsRange[0]+1);
+
         List<LocationStatusReport> results = query.getResultList();
         em.getTransaction().commit();
         em.close();
@@ -91,10 +91,32 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
                 Optional agentOrEmpty = query.getResultStream().map(a -> a.getAgentId()).findFirst();
                 int agentId = agentOrEmpty.isPresent() ? (int) agentOrEmpty.get() : -1;
 
-                emForAgentQuery.getTransaction().commit();
-                emForAgentQuery.close();
-                searchCriteria.add(new AgentIdSearchCriterion(agentId));
-
-            }
+            emForAgentQuery.getTransaction().commit();
+            emForAgentQuery.close();
+            searchCriteria.add(new AgentIdSearchCriterion(agentId));
         }
     }
+
+    private int[] extractPaginationRange(List<ReportSearchCriterion> searchCriteria) {
+        String resultsRangeAsString = "";
+        ReportSearchCriterion searchCriterionToRemove = null;
+        for (ReportSearchCriterion criterion : searchCriteria) {
+            for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
+                if (bindingEntry.getKey().equals("results_range_sc_results_range")) {
+                    resultsRangeAsString = (String) bindingEntry.getValue();
+                    searchCriterionToRemove = criterion;
+                }
+            }
+        }
+        int[]rangesAsNumber = new int[2];
+        if (resultsRangeAsString.length() > 0) {
+            searchCriteria.remove(searchCriterionToRemove);
+            String[] ranges =resultsRangeAsString.split("-");
+            rangesAsNumber = Arrays
+                    .stream(ranges)
+                    .mapToInt(numberAsString-> Integer.parseInt(numberAsString))
+                    .toArray();
+        }
+        return rangesAsNumber;
+    }
+}
