@@ -1,4 +1,5 @@
 package org.softwire.training.models;
+import org.softwire.training.api.models.ErrorCode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,14 +31,13 @@ public class ReportBase {
 
     @Column(name = "status", nullable = false)
     public byte getStatus() {
-        if (status <= 100) {
-            return status;
-        } else {
-            return Byte.parseByte("INVALID");
+        if (status<= 100) {
         }
+         else {
+             status=Byte.parseByte(String.valueOf(ErrorCode.INVALID_INPUT));
+        }
+        return status;
     }
-
-
     public void setStatus(byte status) {
         this.status = status;
     }
