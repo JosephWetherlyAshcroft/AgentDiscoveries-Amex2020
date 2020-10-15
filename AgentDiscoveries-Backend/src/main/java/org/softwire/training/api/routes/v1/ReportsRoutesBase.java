@@ -54,6 +54,7 @@ public abstract class ReportsRoutesBase<T extends ReportApiModelBase, U extends 
     protected abstract List<ReportSearchCriterion> parseSearchCriteria(Request req);
 
     public T createReport(Request req, Response res) {
+        permissionsVerifier.verifyIsAgent(req);
         int agentId = usersDao.getUser(req.attribute("user_id"))
                 .flatMap(user -> Optional.ofNullable(user.getAgentId()))
                 .orElseThrow(() -> new FailedRequestException(ErrorCode.OPERATION_FORBIDDEN, "Insufficient permissions"));

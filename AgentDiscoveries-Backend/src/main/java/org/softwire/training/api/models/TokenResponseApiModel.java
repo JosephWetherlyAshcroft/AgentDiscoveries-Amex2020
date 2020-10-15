@@ -6,12 +6,14 @@ public class TokenResponseApiModel {
     private String expires;
     private int userId;
     private boolean isAdmin;
+    private boolean isAgent;
 
-    public TokenResponseApiModel(String token, String expires, int userId, boolean isAdmin) {
+    public TokenResponseApiModel(String token, String expires, int userId, boolean isAdmin, boolean isAgent) {
         this.token = token;
         this.userId = userId;
         this.expires = expires;
-        this.isAdmin=isAdmin;
+        this.isAdmin = isAdmin;
+        this.isAgent = isAgent;
     }
 
     public String getToken() {
@@ -25,4 +27,6 @@ public class TokenResponseApiModel {
     public int getUserId(){return userId;}
 
     public boolean getIsAdmin(){return isAdmin;}
+
+    public boolean getIsAgent(){return isAgent;}
 }
