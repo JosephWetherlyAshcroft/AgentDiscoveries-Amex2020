@@ -37,9 +37,10 @@
     "webpack-dev-server": "^3.8.0"
   },
   "dependencies": {
+    "jspdf": "^2.1.1",
     "moment": "^2.22.1",
     "query-string": "^6.1.0",
-    "react": "^16.3.2",
+    "react": "^16.13.1",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.3.3",
     "react-router": "^4.2.0",

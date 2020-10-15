@@ -97,3 +97,11 @@ body {
   color: #999;
   font-size: 12px;
 }
+
+.search-panel-heading {
+  display: flex;
+  align-items: center;
+}
+.search-panel-heading > span {
+  margin-right: auto;
+}

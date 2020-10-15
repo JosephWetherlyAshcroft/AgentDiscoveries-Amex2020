@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Panel} from 'react-bootstrap';
+import {jsPDF} from 'jspdf';
 
 export default class SearchResult extends React.Component {
     render() {
@@ -15,7 +16,9 @@ export default class SearchResult extends React.Component {
         return results.map((result, index) => {
             return (
                 <Panel key={index}>
-                    <Panel.Heading>Result</Panel.Heading>
+                    <Panel.Heading className='search-panel-heading'>
+                        <span>Result</span> {this.renderDownloadButton(this)}
+                    </Panel.Heading>
                     <Panel.Body>{this.renderResultBody(result)}</Panel.Body>
                 </Panel>
             );
@@ -35,4 +38,18 @@ export default class SearchResult extends React.Component {
                 : <h3>{`${results.length} results`}</h3>)
             : '';
     }
+
+    downloadReport(event) {
+        let doc = new jsPDF();
+        let start = 10;
+        let reportFields = event.target.parentElement.parentElement.getElementsByClassName('panel-body')[0].childNodes;
+        reportFields.forEach(child => doc.text(child.innerHTML, 10, start = start + 10));
+        doc.save('report.pdf');
+    }
+
+    renderDownloadButton(e) {
+        return <button onClick={this.downloadReport.bind(e)}>Download as PDF</button>;
+    }
+
+
 }
