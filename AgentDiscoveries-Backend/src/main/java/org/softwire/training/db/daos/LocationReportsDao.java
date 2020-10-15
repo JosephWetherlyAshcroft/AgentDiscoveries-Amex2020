@@ -64,8 +64,6 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
         ReportSearchCriterion searchCriterionToRemove = null;
         for (ReportSearchCriterion criterion : searchCriteria) {
             for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
-                //System.out.println(bindingEntry.getKey());
-                //System.out.println(bindingEntry.getValue());
                 if (bindingEntry.getKey().equals("call_sign_sc_call_sign")) {
                     agentCallSign = (String) bindingEntry.getValue();
                     searchCriterionToRemove = criterion;
@@ -104,14 +102,11 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
         for (ReportSearchCriterion criterion : searchCriteria) {
             for (Map.Entry<String, Object> bindingEntry : criterion.getBindingsForSql().entrySet()) {
                 if (bindingEntry.getKey().equals("results_range_sc_results_range")) {
-                    //System.out.println("AA "+bindingEntry.getKey());
-                    //System.out.println("BB "+bindingEntry.getValue());
                     resultsRangeAsString = (String) bindingEntry.getValue();
                     searchCriterionToRemove = criterion;
                 }
             }
         }
-        System.out.println("resultsRangeAsString: " + resultsRangeAsString);
         int[]rangesAsNumber = new int[2];
         if (resultsRangeAsString.length() > 0) {
             searchCriteria.remove(searchCriterionToRemove);
@@ -121,8 +116,6 @@ public class LocationReportsDao implements ReportsDao<LocationStatusReport> {
                     .mapToInt(numberAsString-> Integer.parseInt(numberAsString))
                     .toArray();
         }
-
-        System.out.println(Arrays.toString(rangesAsNumber));
         return rangesAsNumber;
     }
 }
