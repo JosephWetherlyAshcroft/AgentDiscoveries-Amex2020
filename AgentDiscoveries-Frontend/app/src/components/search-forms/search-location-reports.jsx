@@ -9,6 +9,7 @@ import {apiGet} from '../utilities/request-helper';
 export default class LocationReportsSearch extends React.Component {
     constructor(props) {
         super(props);
+        let resultsPerPageDefault = 4;
 
         this.state = {
             locations: [],
@@ -20,9 +21,8 @@ export default class LocationReportsSearch extends React.Component {
             toTime: '',
 
             results: [],
-            resultsPerPage: 4,
-            resultsRangeFrom0: [0, 3],
-            miroTest: 'miro1',
+            resultsPerPage: resultsPerPageDefault,
+            resultsRangeFrom0: [0, resultsPerPageDefault - 1],
             message: {}
         };
 
@@ -91,8 +91,12 @@ export default class LocationReportsSearch extends React.Component {
                                      onChange={this.onToChange}/>
                     </FormGroup>
                     <Button type='submit'>Search</Button>
-                    <button id='nextLotOfResultsButton' style={{display:'none'}} onClick={this.loadNextPage}>Next {this.state.miroTest}</button>
-                    <button id='previousLotOfResultsButton' style={{display:'none'}} onClick={this.loadPreviousPage}>Previous {this.state.miroTest}</button>
+                    <div className="previous_nextButtons">
+                        <Button id='previousLotOfResultsButton'
+                                onClick={this.loadPreviousPage}>Previous {this.state.miroTest}</Button>
+                        <Button id='nextLotOfResultsButton'
+                                onClick={this.loadNextPage}>Next {this.state.miroTest}</Button>
+                    </div>
                 </Form>
                 <SearchResult results={this.state.results}/>
             </div>
@@ -117,14 +121,13 @@ export default class LocationReportsSearch extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
-        //set result range to default values
         console.log("Miro url params: ", this.getSearchParametersFromState());
         const url = 'reports/locationstatuses?' + QueryString.stringify(this.getSearchParametersFromState());
         apiGet(url)
             .then(results => {
                 //check the length of results, if < max, hide "next" button
                 console.log("numberOfResults received from backend: ", results.length);
-                if (results.length === this.state.resultsPerPage)document.querySelector('#nextLotOfResultsButton').style.display='inline';
+                if (results.length === this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'visible';
                 this.setState({results: results, message: {}})
             })
             .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
@@ -138,22 +141,22 @@ export default class LocationReportsSearch extends React.Component {
                 previousState.resultsRangeFrom0[1] + previousState.resultsPerPage
             ]
         }), () => {
-            //to do after state update
-            // console.log("Miro url params for 'next': ", this.getSearchParametersFromState());
             const url = 'reports/locationstatuses?' + QueryString.stringify(this.getSearchParametersFromState());
             apiGet(url)
                 .then(results => {
-                    // console.log("numberOfResults received from backend: ", numberOfResults);
-                    // this.hideNextShowPreviousLotButtonIfNeeded(results.length);
-                    if (results.length < this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.display='none';
-                    document.querySelector('#previousLotOfResultsButton').style.display='inline';
-                    this.setState({results: results, message: {}})
+                    if (results.length < this.state.resultsPerPage) document.querySelector('#nextLotOfResultsButton').style.visibility = 'hidden';
+                    document.querySelector('#previousLotOfResultsButton').style.visibility = 'visible';
+                    if(results.length===0) {
+                        return;
+                    } else {
+                        this.setState({results: results, message: {}})
+                    }
                 })
                 .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
         });
     }
 
-    loadPreviousPage(event){
+    loadPreviousPage(event) {
         event.preventDefault();
         this.setState(previousState => ({
             resultsRangeFrom0: [
@@ -161,17 +164,13 @@ export default class LocationReportsSearch extends React.Component {
                 previousState.resultsRangeFrom0[1] - previousState.resultsPerPage
             ]
         }), () => {
-            //to do after state update
-            if (this.state.resultsRangeFrom0[0]<=0) document.querySelector('#previousLotOfResultsButton').style.display='none';
-            if (this.state.resultsRangeFrom0[0]<0) return;
-            // console.log("Miro url params for 'next': ", this.getSearchParametersFromState());
+            if (this.state.resultsRangeFrom0[0] <= 0) document.querySelector('#previousLotOfResultsButton').style.visibility = 'hidden';
+            if (this.state.resultsRangeFrom0[0] < 0) return;
             const url = 'reports/locationstatuses?' + QueryString.stringify(this.getSearchParametersFromState());
             apiGet(url)
                 .then(results => {
-                    // let numberOfResults = results.length;
-                    // console.log("numberOfResults received from backend: ", numberOfResults);
-                    if (this.state.results.length>0) document.querySelector('#nextLotOfResultsButton').style.display='inline';
-                    else document.querySelector('#nextLotOfResultsButton').style.display='none';
+                    if (this.state.results.length > 0) document.querySelector('#nextLotOfResultsButton').style.visibility = 'visible';
+                    else document.querySelector('#nextLotOfResultsButton').style.visibility = 'hidden';
                     this.setState({results: results, message: {}})
                 })
                 .catch(error => this.setState({message: {message: error.message, type: 'danger'}}));
@@ -187,9 +186,4 @@ export default class LocationReportsSearch extends React.Component {
             resultsRange: `${this.state.resultsRangeFrom0[0]}-${this.state.resultsRangeFrom0[1]}`
         });
     }
-    hideNextShowPreviousLotButtonIfNeeded(resultsLength){
-        if (resultsLength < this.state.resultsPerPage)document.querySelector('#nextLotOfResultsButton').style.display='none';
-
-    }
-
 }
