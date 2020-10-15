@@ -50,9 +50,9 @@ export default class LocationReportsSearch extends React.Component {
                     <FormGroup>
                         <ControlLabel>Call Sign</ControlLabel>
                         <FormControl componentClass='select' required
-                                     value={this.state.callSign}
-                                     onChange={this.onCallSignChange}
-                                     id='callSign-select'>
+                            value={this.state.callSign}
+                            onChange={this.onCallSignChange}
+                            id='callSign-select'>
                             <option value='' hidden>Choose a call sign</option>
                             {this.state.callSigns.map(callSign =>
                                 <option key={callSign.callSign} value={callSign.callSign}>{callSign.callSign}, {callSign.firstName}</option>)}
@@ -61,9 +61,9 @@ export default class LocationReportsSearch extends React.Component {
                     <FormGroup>
                         <ControlLabel>Location</ControlLabel>
                         <FormControl componentClass='select' required
-                                     value={this.state.locationId}
-                                     onChange={this.onLocationChange}
-                                     id='location-select'>
+                            value={this.state.locationId}
+                            onChange={this.onLocationChange}
+                            id='location-select'>
                             <option value='' hidden>Choose a location</option>
                             {this.state.locations.map(location =>
                                 <option key={location.locationId} value={location.locationId}>{location.location}, {location.siteName}</option>)}
