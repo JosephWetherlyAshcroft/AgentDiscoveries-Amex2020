@@ -17,7 +17,7 @@ export default class SearchResult extends React.Component {
             return (
                 <Panel key={index}>
                     <Panel.Heading className='search-panel-heading'>
-                        <span>Result</span> {this.renderDownloadButton(this)}
+                        <span>Result</span>{this.renderViewReportButton()} {this.renderDownloadButton(this)}
                     </Panel.Heading>
                     <Panel.Body>{this.renderResultBody(result)}</Panel.Body>
                 </Panel>
@@ -49,6 +49,10 @@ export default class SearchResult extends React.Component {
 
     renderDownloadButton(e) {
         return <button onClick={this.downloadReport.bind(e)}>Download as PDF</button>;
+    }
+
+    renderViewReportButton(){
+        return <a href='/#/admin/locationReport/3'><button>View Report</button></a>;
     }
 
     truncate(string, chars){
