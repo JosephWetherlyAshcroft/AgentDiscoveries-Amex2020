@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 $background-color: rgb(238, 238, 238);
 $text-color: rgb(12, 12, 12);
 $overlay-color: rgb(247, 197, 89);
@@ -104,4 +105,13 @@ body {
 .zone {
   color: #999;
   font-size: 12px;
+}
+
+.search-panel-heading {
+  display: flex;
+  align-items: center;
+}
+
+.search-panel-heading > span {
+  margin-right: auto;
 }
