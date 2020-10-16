@@ -66,7 +66,7 @@ export default class RegionForm extends React.Component {
 
     loadRegion(id) {
         apiGet('regions', id)
-            .then(result => this.setState({ name: result.name, locations: result.locations.join(', ') }))
+            .then(result => this.setState({ name: result.name }))
             .catch(error => this.setState({ message: { message: error.message, type: 'danger' } }));
     }
 }
